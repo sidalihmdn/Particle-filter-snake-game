@@ -1,8 +1,4 @@
-# binome : HAMZAOUI MOHAMED & HAMDANE Sid-Ali
-
-
-
-
+# this is an implementation of the particle filter
 
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
@@ -15,32 +11,35 @@ import cv2
 
 
 
-
+#this function moves a given particle in a random direction
 def move(X):
     x = X[0]
     y = X[1]
     n = random.randint(1,4)
     if n == 1 :
-        return (x+1 , y) #droit
+        return (x+1 , y) #right
     elif n == 2 :
-        return (x , y-1) #  haut
+        return (x , y-1) #up
     elif n==3:
-        return (x , y+1) #bas
+        return (x , y+1) #down
     elif n == 4 :
-        return (x-1 , y) # gauche
+        return (x-1 , y) #left
 
+    
+# this function cheks the color of every pixel of a given image
 def mesure(img):
     z = np.zeros((200,200)).tolist()
     for i in range(200):
         for j in range(200):
             if (img[i][j] == (255,0,0)).all():
                 z[i][j] = True
-                # print("got it")
             else :
                 z[i][j] = False
     
     return z
 
+
+# this function loads the set of images
 def load():
     imgs = []
     for i in range(1,1018):
@@ -89,11 +88,9 @@ def particul_filter(x_init , z ):
     for i in range(n_samples):
         x_t[i] = move(x_t[i])
         w_t[i] = weights(x_t[i] , z)
-        #print(w_t[i])
         if (w_t[i] == 1):
             # saving the position of the snake
             snake.append(i)
-        #print(x_t[i][0])
         p[i] = (w_t[i]*x_t[i][0] , w_t[i]*x_t[i][1])
     
     # resampling
@@ -113,8 +110,6 @@ def particul_filter(x_init , z ):
 
 def weights(p,z):
     pixel = list(p)
-    #print(p)
-    #print(pixel)
     pixel = [abs(pix) for pix in pixel]
     
     if (pixel[0] == 0 or pixel[0] >= 200) :
@@ -143,14 +138,5 @@ for i in range(500) :
     # applying the particular filter
     X = particul_filter(X,Z)
     
-    
-
-
-
-
-
-
-# plt.scatter(X_n[0], X_n[1],marker='.' , linewidths=1)
-
 animate(imgs)
 
